@@ -83,6 +83,17 @@
   .stat-item .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
   .stat-item .val { font-size: 13px; font-weight: 700; color: #fff; margin-top: 2px; }
 
+  /* 人效比例與策略卡片樣式 */
+  .efficiency-box {
+    background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 6px; padding: 10px; margin-bottom: 10px; font-size: 11px;
+  }
+  .eff-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-weight: 700; }
+  .eff-tag { padding: 1px 6px; border-radius: 4px; font-size: 10px; }
+  .eff-high { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+  .eff-med { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+  .eff-low { background: rgba(230, 103, 103, 0.2); color: #e66767; }
+  .eff-strategy { color: var(--text-secondary); line-height: 1.4; margin-top: 4px; }
+
   .level-pipeline-box {
     background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; font-size: 11px;
   }
@@ -102,7 +113,6 @@
   .card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
   .card-footer { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 11.5px; color: var(--cyan); font-weight: 600; }
 
-  /* 雙語對照樣式 */
   .bi-text { display: flex; flex-direction: column; gap: 2px; }
   .bi-en { color: #fff; font-weight: 600; }
   .bi-zh { color: var(--text-secondary); font-size: 11.5px; border-left: 2px solid var(--cyan); padding-left: 6px; margin-top: 2px; }
@@ -131,7 +141,7 @@
     <div>
       <h1 id="page_main_title">Executive Team Dashboard — 六大職能部門動態總覽</h1>
     </div>
-    <!-- 語言切換選單 (EN / 繁中 / 雙語對照) -->
+    <!-- 語言切換選單 -->
     <div class="lang-switcher">
       <button class="lang-btn" id="btn_en" onclick="setLang('en')">English</button>
       <button class="lang-btn" id="btn_zh" onclick="setLang('zh')">繁體中文</button>
@@ -159,7 +169,7 @@
     </div>
   </div>
 
-  <div class="section-title" id="sec_title_text">🏢 六大核心職能部門即時動態與職級/管道分析</div>
+  <div class="section-title" id="sec_title_text">🏢 六大核心職能部門即時動態與人效策略分析</div>
 
   <!-- 六大部門動態卡片網格 -->
   <div class="cards-grid" id="departmentsGrid"></div>
@@ -188,7 +198,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-let currentLang = 'bi'; // 預設為雙語對照模式
+let currentLang = 'bi'; // 預設為雙語對照
 
 function setLang(lang) {
   currentLang = lang;
@@ -198,19 +208,24 @@ function setLang(lang) {
   renderDashboard();
 }
 
-// 六大職能部門資料（內含中英文雙語文字）
+// 六大職能部門資料（含人效比例與對應高/中/低策略）
 const departmentsData = [
   {
     id: 'eng',
     name: { en: 'Engineering', zh: '研發工程' },
     badge: 'T2 Benchmark',
     baseHc: 15, newHires: 3, baseBudget: 1552500, hireCost: 228000,
+    effRatio: '245k USD / HC (High)', effLevel: 'high',
+    effStrategy: {
+      en: 'High Efficiency: Maintain leverage via architecture reuse; invest in developer tooling to compound output without linear headcount scaling.',
+      zh: '高人效：透過架構重用維持槓桿效益；投資開發者工具（DevOps/AI），在不線性增加編制下提升產出。'
+    },
     levels: { L3: 4, L4: 6, L5: 3, L6: 1, L7: 1, L8: 0 },
     pipeline: { hr: 24, tech: 12, lm: 6, offer: 1 },
     star: 3, highPot: 4, pip: 2,
     desc: {
-      en: 'Spearheading core high-concurrency clearing architecture refactoring; expanding 3 Staff/Senior headcount for 24/7 SRE auto-healing & SOC2 audit.',
-      zh: '主導全球核心清算架構高併發重構，擴編 3 名 Staff/Senior 級別支援 24/7 SRE 自動化自愈體系與 SOC2 審計。'
+      en: 'Spearheading core high-concurrency clearing architecture refactoring; expanding 3 Staff/Senior headcount for 24/7 SRE auto-healing.',
+      zh: '主導全球核心清算架構高併發重構，擴編 3 名 Staff/Senior 級別支援 24/7 SRE 自動化自愈體系。'
     },
     goal: { en: 'Strategic Goal: 99.99% Availability & -40% Latency', zh: '戰略目標：99.99% 高可用性與延遲降低 40%' }
   },
@@ -219,6 +234,11 @@ const departmentsData = [
     name: { en: 'Product Management', zh: '產品管理' },
     badge: 'T1-T2 Mix',
     baseHc: 8, newHires: 1, baseBudget: 980000, hireCost: 140000,
+    effRatio: '185k USD / HC (Medium)', effLevel: 'med',
+    effStrategy: {
+      en: 'Medium Efficiency: Standardize PRD frameworks and feature validation loops; tie PM output directly to activation & retention metrics.',
+      zh: '中人效：標準化 PRD 框架與功能驗證閉環；將 PM 產出與用戶活躍度及留存指標直接掛鉤。'
+    },
     levels: { L3: 2, L4: 3, L5: 2, L6: 1, L7: 0, L8: 0 },
     pipeline: { hr: 14, tech: 8, lm: 3, offer: 1 },
     star: 2, highPot: 3, pip: 1,
@@ -233,6 +253,11 @@ const departmentsData = [
     name: { en: 'Operations', zh: '營運管理' },
     badge: 'Global Ops',
     baseHc: 12, newHires: 2, baseBudget: 1120000, hireCost: 165000,
+    effRatio: '140k USD / HC (Medium)', effLevel: 'med',
+    effStrategy: {
+      en: 'Medium Efficiency: Automate manual ticket reconciliations; shift headcount focus from routine dispatch to exception handling.',
+      zh: '中人效：自動化日常工單對帳與清算對接；將人力重心從常規派單轉向異常例外處理與通道治理。'
+    },
     levels: { L3: 4, L4: 5, L5: 2, L6: 1, L7: 0, L8: 0 },
     pipeline: { hr: 18, tech: 10, lm: 4, offer: 1 },
     star: 2, highPot: 4, pip: 1,
@@ -247,6 +272,11 @@ const departmentsData = [
     name: { en: 'BD & Sales', zh: '商務與銷售' },
     badge: 'Growth Driver',
     baseHc: 10, newHires: 2, baseBudget: 1350000, hireCost: 210000,
+    effRatio: '310k USD / HC (High)', effLevel: 'high',
+    effStrategy: {
+      en: 'High Efficiency: Scale top-performers via tiered commission structures and automated CRM pipelines; protect CAC ratios tightly.',
+      zh: '高人效：透過階梯式獎金與自動化 CRM 漏斗擴大頂尖業務產出；嚴格把控獲客成本（CAC）與 LTV 比值。'
+    },
     levels: { L3: 3, L4: 4, L5: 2, L6: 1, L7: 0, L8: 0 },
     pipeline: { hr: 20, tech: 10, lm: 5, offer: 2 },
     star: 3, highPot: 3, pip: 2,
@@ -261,6 +291,11 @@ const departmentsData = [
     name: { en: 'Legal & Compliance', zh: '法務與合規' },
     badge: 'Risk Defense',
     baseHc: 6, newHires: 1, baseBudget: 890000, hireCost: 150000,
+    effRatio: '110k USD / HC (Low)', effLevel: 'low',
+    effStrategy: {
+      en: 'Low Efficiency (Cost Center): Implement standardized contract playbooks for lower-risk agreements to free up counsel for complex licensing.',
+      zh: '低人效（成本中心）：針對常規合約導入標準化範本與自動審閱，釋放專業法務投入高難度牌照攻堅。'
+    },
     levels: { L3: 1, L4: 2, L5: 2, L6: 1, L7: 0, L8: 0 },
     pipeline: { hr: 8, tech: 4, lm: 2, offer: 1 },
     star: 1, highPot: 2, pip: 0,
@@ -275,6 +310,11 @@ const departmentsData = [
     name: { en: 'Finance & HR', zh: '財務與人資' },
     badge: 'Governance',
     baseHc: 8, newHires: 1, baseBudget: 950000, hireCost: 110000,
+    effRatio: '125k USD / HC (Low)', effLevel: 'low',
+    effStrategy: {
+      en: 'Low Efficiency (Cost Center): Automate expense auditing and payroll flows; centralize HR operations to protect core strategic HRBP bandwidth.',
+      zh: '低人效（成本中心）：自動化日常費用審核與薪酬核算；集中化 HR 營運，聚焦核心策略 HRBP 的人才密度。'
+    },
     levels: { L3: 2, L4: 3, L5: 2, L6: 0, L7: 1, L8: 0 },
     pipeline: { hr: 10, tech: 5, lm: 2, offer: 1 },
     star: 2, highPot: 3, pip: 1,
@@ -303,21 +343,21 @@ function renderDashboard() {
     document.getElementById('lbl_sum_budget').innerText = "Current Annual Payroll Budget";
     document.getElementById('lbl_sum_hire').innerText = "Estimated Hiring Budget Impact";
     document.getElementById('lbl_sum_pip').innerText = "Talent Risk Pool (Box 9/6 PIP)";
-    document.getElementById('sec_title_text').innerText = "🏢 Six Core Functional Departments Real-Time Dynamics & Pipeline Analysis";
+    document.getElementById('sec_title_text').innerText = "🏢 Six Core Functional Departments Real-Time Dynamics & Efficiency Strategies";
   } else if (currentLang === 'zh') {
     document.getElementById('page_main_title').innerText = "高階管理團隊看板 — 六大職能部門動態總覽";
     document.getElementById('lbl_sum_hc').innerText = "公司總編制 (現有 / 含新招)";
     document.getElementById('lbl_sum_budget').innerText = "現有年度總薪酬預算";
     document.getElementById('lbl_sum_hire').innerText = "預計增加總預算影響";
     document.getElementById('lbl_sum_pip').innerText = "人才風險池 (Box 9/6 PIP)";
-    document.getElementById('sec_title_text').innerText = "🏢 六大核心職能部門即時動態與職級/管道分析";
+    document.getElementById('sec_title_text').innerText = "🏢 六大核心職能部門即時動態與人效策略分析";
   } else {
     document.getElementById('page_main_title').innerText = "Executive Team Dashboard — 六大職能部門動態總覽";
     document.getElementById('lbl_sum_hc').innerText = "Total Headcount (Current / New) | 公司總編制";
     document.getElementById('lbl_sum_budget').innerText = "Annual Payroll Budget | 現有年度總薪酬預算";
     document.getElementById('lbl_sum_hire').innerText = "Hiring Budget Impact | 預計增加總預算影響";
     document.getElementById('lbl_sum_pip').innerText = "Talent Risk Pool (PIP) | 人才風險池";
-    document.getElementById('sec_title_text').innerText = "🏢 Six Core Functional Departments Dynamics & Pipeline Analysis (六大職能部門即時動態與分析)";
+    document.getElementById('sec_title_text').innerText = "🏢 Six Core Functional Departments Dynamics & Efficiency Strategies (六大部門即時動態與人效策略)";
   }
 
   let totalBaseHc = 0, totalNewHc = 0, totalBaseBudget = 0, totalHireCost = 0, totalPip = 0;
@@ -342,6 +382,12 @@ function renderDashboard() {
     const lblLevels = currentLang==='en'?'📊 Level Distribution (L3 - L8)':'📊 職級分佈 (L3 - L8)';
     const lblPipe = currentLang==='en'?'🔎 Recruiting Pipeline':'🔎 招募 Pipeline';
     const lblReview = currentLang==='en'?'👥 Talent Review (9-Box)':'👥 人才盤點 (9-Box)';
+
+    let effClass = 'eff-med';
+    let effBadgeText = 'Medium Efficiency';
+    if(d.effLevel === 'high') { effClass = 'eff-high'; effBadgeText = 'High Efficiency (高人效)'; }
+    else if(d.effLevel === 'low') { effClass = 'eff-low'; effBadgeText = 'Low Efficiency / Cost Center (低人效/成本中心)'; }
+    else { effBadgeText = 'Medium Efficiency (中人效)'; }
 
     return `
       <div class="metric-card ${d.id}">
@@ -368,6 +414,15 @@ function renderDashboard() {
               <div class="lbl">${lblIncBud}</div>
               <div class="val" style="color:var(--warning);">+$${d.hireCost.toLocaleString()} (+${budgetGrowthPct}%)</div>
             </div>
+          </div>
+
+          <!-- 部門平均人效與策略 -->
+          <div class="efficiency-box">
+            <div class="eff-header">
+              <span>⚡ Avg Efficiency / 人效: <span style="color:#fff;">${d.effRatio}</span></span>
+              <span class="eff-tag ${effClass}">${d.effLevel.toUpperCase()}</span>
+            </div>
+            <div class="eff-strategy"><b>Strategy: </b>${formatText(d.effStrategy)}</div>
           </div>
 
           <!-- 職級序列與 PIPELINE 圖表 -->

@@ -262,7 +262,7 @@ function verifySitePassword() {
     document.getElementById('site_lock_overlay').style.display = 'none';
     sessionStorage.setItem('site_unlocked', 'true');
   } else {
-    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入（預設: 5678）！";
+    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入（四位數:_ _ _ _）！";
   }
 }
 

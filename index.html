@@ -42,6 +42,11 @@
   header.top{margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:16px;}
   header.top h1{font-size:22px; font-weight:800; letter-spacing:-0.02em;}
 
+  /* 語言切換按鈕列 */
+  .lang-switcher { display: inline-flex; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 3px; gap: 2px; }
+  .lang-btn { background: none; border: none; color: var(--text-muted); padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all .15s; }
+  .lang-btn.active { background: var(--cyan); color: #090d16; }
+
   .company-summary-bar {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;
   }
@@ -78,7 +83,6 @@
   .stat-item .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
   .stat-item .val { font-size: 13px; font-weight: 700; color: #fff; margin-top: 2px; }
 
-  /* 職級階梯與 PIPLINE 圖表區塊 */
   .level-pipeline-box {
     background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; font-size: 11px;
   }
@@ -86,7 +90,7 @@
   .level-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
   .level-tag { background: #090d16; border: 1px solid var(--border); border-radius: 4px; padding: 2px 5px; font-size: 10px; color: var(--text-secondary); }
   
-  .pipeline-bar-row { display: grid; grid-template-columns: 80px 1fr 30px; align-items: center; gap: 6px; font-size: 10px; margin-bottom: 3px; }
+  .pipeline-bar-row { display: grid; grid-template-columns: 85px 1fr 30px; align-items: center; gap: 6px; font-size: 10px; margin-bottom: 3px; }
   .pipeline-track { height: 6px; background: #090d16; border-radius: 3px; overflow: hidden; }
   .pipeline-fill { height: 100%; background: var(--series-1); border-radius: 3px; }
 
@@ -97,6 +101,11 @@
 
   .card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
   .card-footer { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 11.5px; color: var(--cyan); font-weight: 600; }
+
+  /* 雙語對照樣式 */
+  .bi-text { display: flex; flex-direction: column; gap: 2px; }
+  .bi-en { color: #fff; font-weight: 600; }
+  .bi-zh { color: var(--text-secondary); font-size: 11.5px; border-left: 2px solid var(--cyan); padding-left: 6px; margin-top: 2px; }
 
   @media (max-width: 1080px) {
     .cards-grid { grid-template-columns: 1fr; }
@@ -120,31 +129,37 @@
 <div class="wrap">
   <header class="top">
     <div>
-      <h1>Executive Team Dashboard — 六大職能部門動態總覽</h1>
+      <h1 id="page_main_title">Executive Team Dashboard — 六大職能部門動態總覽</h1>
+    </div>
+    <!-- 語言切換選單 (EN / 繁中 / 雙語對照) -->
+    <div class="lang-switcher">
+      <button class="lang-btn" id="btn_en" onclick="setLang('en')">English</button>
+      <button class="lang-btn" id="btn_zh" onclick="setLang('zh')">繁體中文</button>
+      <button class="lang-btn active" id="btn_bi" onclick="setLang('bi')">Bilingual (雙語對照)</button>
     </div>
   </header>
 
   <!-- 公司級總計動態數據條 -->
   <div class="company-summary-bar">
     <div class="summary-box">
-      <div class="lbl">公司總編制 (現有 / 含新招)</div>
+      <div class="lbl" id="lbl_sum_hc">公司總編制 (現有 / 含新招)</div>
       <div class="val" id="sum_hc">59 / 68 人 (+15.3%)</div>
     </div>
     <div class="summary-box" style="border-top-color: var(--green);">
-      <div class="lbl">現有年度總薪酬預算</div>
+      <div class="lbl" id="lbl_sum_budget">現有年度總薪酬預算</div>
       <div class="val" id="sum_budget" style="color:var(--green);">$6,892,500</div>
     </div>
     <div class="summary-box" style="border-top-color: var(--warning);">
-      <div class="lbl">預計增加總預算影響</div>
+      <div class="lbl" id="lbl_sum_hire">預計增加總預算影響</div>
       <div class="val" id="sum_hire_cost" style="color:var(--warning);">+$1,095,000 (+15.9%)</div>
     </div>
     <div class="summary-box" style="border-top-color: var(--critical);">
-      <div class="lbl">人才風險池 (Box 9/6 PIP)</div>
+      <div class="lbl" id="lbl_sum_pip">人才風險池 (Box 9/6 PIP)</div>
       <div class="val" id="sum_pip" style="color:var(--critical);">7 人</div>
     </div>
   </div>
 
-  <div class="section-title">🏢 六大核心職能部門即時動態與職級/管道分析</div>
+  <div class="section-title" id="sec_title_text">🏢 六大核心職能部門即時動態與職級/管道分析</div>
 
   <!-- 六大部門動態卡片網格 -->
   <div class="cards-grid" id="departmentsGrid"></div>
@@ -173,103 +188,139 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 六大職能部門動態資料來源 (含 L3~L8 職級分佈與 Pipeline 數據)
+let currentLang = 'bi'; // 預設為雙語對照模式
+
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btn_en').className = `lang-btn ${lang==='en'?'active':''}`;
+  document.getElementById('btn_zh').className = `lang-btn ${lang==='zh'?'active':''}`;
+  document.getElementById('btn_bi').className = `lang-btn ${lang==='bi'?'active':''}`;
+  renderDashboard();
+}
+
+// 六大職能部門資料（內含中英文雙語文字）
 const departmentsData = [
   {
     id: 'eng',
-    name: '研發工程 (Engineering)',
+    name: { en: 'Engineering', zh: '研發工程' },
     badge: 'T2 Benchmark',
-    baseHc: 15,
-    newHires: 3,
-    baseBudget: 1552500,
-    hireCost: 228000,
+    baseHc: 15, newHires: 3, baseBudget: 1552500, hireCost: 228000,
     levels: { L3: 4, L4: 6, L5: 3, L6: 1, L7: 1, L8: 0 },
     pipeline: { hr: 24, tech: 12, lm: 6, offer: 1 },
     star: 3, highPot: 4, pip: 2,
-    desc: '主導全球核心清算架構高併發重構，擴編 3 名 Staff/Senior 級別支援 24/7 SRE 自動化自愈體系與 SOC2 審計。',
-    goal: '🎯 戰略目標：99.99% 高可用性與延遲降低 40%'
+    desc: {
+      en: 'Spearheading core high-concurrency clearing architecture refactoring; expanding 3 Staff/Senior headcount for 24/7 SRE auto-healing & SOC2 audit.',
+      zh: '主導全球核心清算架構高併發重構，擴編 3 名 Staff/Senior 級別支援 24/7 SRE 自動化自愈體系與 SOC2 審計。'
+    },
+    goal: { en: 'Strategic Goal: 99.99% Availability & -40% Latency', zh: '戰略目標：99.99% 高可用性與延遲降低 40%' }
   },
   {
     id: 'prod',
-    name: '產品管理 (Product Management)',
+    name: { en: 'Product Management', zh: '產品管理' },
     badge: 'T1-T2 Mix',
-    baseHc: 8,
-    newHires: 1,
-    baseBudget: 980000,
-    hireCost: 140000,
+    baseHc: 8, newHires: 1, baseBudget: 980000, hireCost: 140000,
     levels: { L3: 2, L4: 3, L5: 2, L6: 1, L7: 0, L8: 0 },
     pipeline: { hr: 14, tech: 8, lm: 3, offer: 1 },
     star: 2, highPot: 3, pip: 1,
-    desc: '推進跨國本地化產品體驗與多幣種資金池路由協議設計，強化用戶旅程轉化率與產品矩陣 ROI。',
-    goal: '🎯 戰略目標：全球支付與交易生態系閉環'
+    desc: {
+      en: 'Driving internationalized UX localization and multi-currency liquidity pool routing design to boost conversion metrics and portfolio ROI.',
+      zh: '推進跨國本地化產品體驗與多幣種資金池路由協議設計，強化用戶旅程轉化率與產品矩陣 ROI。'
+    },
+    goal: { en: 'Strategic Goal: Global Payment & Trading Ecosystem Closed-Loop', zh: '戰略目標：全球支付與交易生態系閉環' }
   },
   {
     id: 'ops',
-    name: '營運管理 (Operations)',
+    name: { en: 'Operations', zh: '營運管理' },
     badge: 'Global Ops',
-    baseHc: 12,
-    newHires: 2,
-    baseBudget: 1120000,
-    hireCost: 165000,
+    baseHc: 12, newHires: 2, baseBudget: 1120000, hireCost: 165000,
     levels: { L3: 4, L4: 5, L5: 2, L6: 1, L7: 0, L8: 0 },
     pipeline: { hr: 18, tech: 10, lm: 4, offer: 1 },
     star: 2, highPot: 4, pip: 1,
-    desc: '落實跨國清算自動化降本，優化單位營運成本（Unit Cost）與 24/7 通道異常極速應變機制。',
-    goal: '🎯 戰略目標：營運自動化覆蓋率達 85%'
+    desc: {
+      en: 'Executing cross-border clearing automation to drive unit cost down and strengthen 24/7 incident response SLA defense.',
+      zh: '落實跨國清算自動化降本，優化單位營運成本（Unit Cost）與 24/7 通道異常極速應變機制。'
+    },
+    goal: { en: 'Strategic Goal: 85% Workflow Automation Coverage', zh: '戰略目標：營運自動化覆蓋率達 85%' }
   },
   {
     id: 'bd',
-    name: '商務與銷售 (BD & Sales)',
+    name: { en: 'BD & Sales', zh: '商務與銷售' },
     badge: 'Growth Driver',
-    baseHc: 10,
-    newHires: 2,
-    baseBudget: 1350000,
-    hireCost: 210000,
+    baseHc: 10, newHires: 2, baseBudget: 1350000, hireCost: 210000,
     levels: { L3: 3, L4: 4, L5: 2, L6: 1, L7: 0, L8: 0 },
     pipeline: { hr: 20, tech: 10, lm: 5, offer: 2 },
     star: 3, highPot: 3, pip: 2,
-    desc: '聚焦大區 Top 機構客戶攻堅與戰略大單成交，優化獲客成本（CAC）並擴展全球商業版圖。',
-    goal: '🎯 戰略目標：大中華與亞太區營收 Quota 達成'
+    desc: {
+      en: 'Targeting top-tier regional institutional accounts, high-stakes deal closing, and optimizing client acquisition cost (CAC).',
+      zh: '聚焦大區 Top 機構客戶攻堅與戰略大單成交，優化獲客成本（CAC）並擴展全球商業版圖。'
+    },
+    goal: { en: 'Strategic Goal: Greater China & APAC Quota Attainment', zh: '戰略目標：大中華與亞太區營收 Quota 達成' }
   },
   {
     id: 'legal',
-    name: '法務與合規 (Legal & Compliance)',
+    name: { en: 'Legal & Compliance', zh: '法務與合規' },
     badge: 'Risk Defense',
-    baseHc: 6,
-    newHires: 1,
-    baseBudget: 890000,
-    hireCost: 150000,
+    baseHc: 6, newHires: 1, baseBudget: 890000, hireCost: 150000,
     levels: { L3: 1, L4: 2, L5: 2, L6: 1, L7: 0, L8: 0 },
     pipeline: { hr: 8, tech: 4, lm: 2, offer: 1 },
     star: 1, highPot: 2, pip: 0,
-    desc: '對接多國牌照申請與 AML 監管審計，強化跨國子公司合規架構與涉訴防禦最高防線。',
-    goal: '🎯 戰略目標：零重大監管罰單與牌照全覆蓋'
+    desc: {
+      en: 'Managing regulatory licensing filings and AML audits; establishing enterprise legal risk mitigation and litigation defense lines.',
+      zh: '對接多國牌照申請與 AML 監管審計，強化跨國子公司合規架構與涉訴防禦最高防線。'
+    },
+    goal: { en: 'Strategic Goal: Zero Regulatory Penalties & Full Licensing', zh: '戰略目標：零重大監管罰單與牌照全覆蓋' }
   },
   {
     id: 'fin_hr',
-    name: '財務與人資 (Finance & HR)',
+    name: { en: 'Finance & HR', zh: '財務與人資' },
     badge: 'Governance',
-    baseHc: 8,
-    newHires: 1,
-    baseBudget: 950000,
-    hireCost: 110000,
+    baseHc: 8, newHires: 1, baseBudget: 950000, hireCost: 110000,
     levels: { L3: 2, L4: 3, L5: 2, L6: 0, L7: 1, L8: 0 },
     pipeline: { hr: 10, tech: 5, lm: 2, offer: 1 },
     star: 2, highPot: 3, pip: 1,
-    desc: '確保四大會計師事務所無保留意見審查，推動 L3-L8 雙軌職涯階梯落地與跨國人效優化。',
-    goal: '🎯 戰略目標：月結週期壓縮至 T+2 與海外資本佈局'
+    desc: {
+      en: 'Securing Big 4 clean audit sign-off; rolling out L3-L8 dual-track career ladders and cross-border headcount efficiency.',
+      zh: '確保四大會計師事務所無保留意見審查，推動 L3-L8 雙軌職涯階梯落地與跨國人效優化。'
+    },
+    goal: { en: 'Strategic Goal: T+2 Month-End Close & Capital Treasury', zh: '戰略目標：月結週期壓縮至 T+2 與海外資本佈局' }
   }
 ];
+
+function formatText(item) {
+  if (currentLang === 'en') return `<span class="bi-en">${item.en}</span>`;
+  if (currentLang === 'zh') return `<span class="bi-zh" style="border-left:none; padding-left:0;">${item.zh}</span>`;
+  return `<div class="bi-text"><span class="bi-en">${item.en}</span><span class="bi-zh">${item.zh}</span></div>`;
+}
 
 function renderDashboard() {
   const gridEl = document.getElementById('departmentsGrid');
   if (!gridEl) return;
 
-  let totalBaseHc = 0;
-  let totalNewHc = 0;
-  let totalBaseBudget = 0;
-  let totalHireCost = 0;
-  let totalPip = 0;
+  // 更新頂部標題文字
+  if (currentLang === 'en') {
+    document.getElementById('page_main_title').innerText = "Executive Team Dashboard — Six Functions Overview";
+    document.getElementById('lbl_sum_hc').innerText = "Total Headcount (Current / New)";
+    document.getElementById('lbl_sum_budget').innerText = "Current Annual Payroll Budget";
+    document.getElementById('lbl_sum_hire').innerText = "Estimated Hiring Budget Impact";
+    document.getElementById('lbl_sum_pip').innerText = "Talent Risk Pool (Box 9/6 PIP)";
+    document.getElementById('sec_title_text').innerText = "🏢 Six Core Functional Departments Real-Time Dynamics & Pipeline Analysis";
+  } else if (currentLang === 'zh') {
+    document.getElementById('page_main_title').innerText = "高階管理團隊看板 — 六大職能部門動態總覽";
+    document.getElementById('lbl_sum_hc').innerText = "公司總編制 (現有 / 含新招)";
+    document.getElementById('lbl_sum_budget').innerText = "現有年度總薪酬預算";
+    document.getElementById('lbl_sum_hire').innerText = "預計增加總預算影響";
+    document.getElementById('lbl_sum_pip').innerText = "人才風險池 (Box 9/6 PIP)";
+    document.getElementById('sec_title_text').innerText = "🏢 六大核心職能部門即時動態與職級/管道分析";
+  } else {
+    document.getElementById('page_main_title').innerText = "Executive Team Dashboard — 六大職能部門動態總覽";
+    document.getElementById('lbl_sum_hc').innerText = "Total Headcount (Current / New) | 公司總編制";
+    document.getElementById('lbl_sum_budget').innerText = "Annual Payroll Budget | 現有年度總薪酬預算";
+    document.getElementById('lbl_sum_hire').innerText = "Hiring Budget Impact | 預計增加總預算影響";
+    document.getElementById('lbl_sum_pip').innerText = "Talent Risk Pool (PIP) | 人才風險池";
+    document.getElementById('sec_title_text').innerText = "🏢 Six Core Functional Departments Dynamics & Pipeline Analysis (六大職能部門即時動態與分析)";
+  }
+
+  let totalBaseHc = 0, totalNewHc = 0, totalBaseBudget = 0, totalHireCost = 0, totalPip = 0;
 
   gridEl.innerHTML = departmentsData.map(d => {
     totalBaseHc += d.baseHc;
@@ -282,39 +333,46 @@ function renderDashboard() {
     const finalBudget = d.baseBudget + d.hireCost;
     const hcGrowthPct = ((d.newHires / d.baseHc) * 100).toFixed(1);
     const budgetGrowthPct = ((d.hireCost / d.baseBudget) * 100).toFixed(1);
-
     const maxPipe = Math.max(d.pipeline.hr, 1);
+
+    const lblCurrent = currentLang==='en'?'Current HC':'現有編制';
+    const lblNew = currentLang==='en'?'New Hires':'新招募編制';
+    const lblBaseBud = currentLang==='en'?'Current Budget':'現有年度預算';
+    const lblIncBud = currentLang==='en'?'Budget Impact':'預計增加預算';
+    const lblLevels = currentLang==='en'?'📊 Level Distribution (L3 - L8)':'📊 職級分佈 (L3 - L8)';
+    const lblPipe = currentLang==='en'?'🔎 Recruiting Pipeline':'🔎 招募 Pipeline';
+    const lblReview = currentLang==='en'?'👥 Talent Review (9-Box)':'👥 人才盤點 (9-Box)';
 
     return `
       <div class="metric-card ${d.id}">
         <div>
           <div class="card-header">
-            <div class="card-title">${d.name}</div>
+            <div class="card-title">${formatText(d.name)}</div>
             <div class="card-badge">${d.badge}</div>
           </div>
           
           <div class="metric-stats">
             <div class="stat-item">
-              <div class="lbl">現有編制</div>
-              <div class="val" style="color:var(--cyan);">${d.baseHc} 人</div>
+              <div class="lbl">${lblCurrent}</div>
+              <div class="val" style="color:var(--cyan);">${d.baseHc} HC / 人</div>
             </div>
             <div class="stat-item">
-              <div class="lbl">新招募編制</div>
-              <div class="val" style="color:var(--green);">+${d.newHires} 人 (+${hcGrowthPct}%)</div>
+              <div class="lbl">${lblNew}</div>
+              <div class="val" style="color:var(--green);">+${d.newHires} (+${hcGrowthPct}%)</div>
             </div>
             <div class="stat-item">
-              <div class="lbl">現有年度預算</div>
+              <div class="lbl">${lblBaseBud}</div>
               <div class="val" style="color:var(--text-secondary);">$${d.baseBudget.toLocaleString()}</div>
             </div>
             <div class="stat-item">
-              <div class="lbl">預計增加預算</div>
+              <div class="lbl">${lblIncBud}</div>
               <div class="val" style="color:var(--warning);">+$${d.hireCost.toLocaleString()} (+${budgetGrowthPct}%)</div>
             </div>
           </div>
 
           <!-- 職級序列與 PIPELINE 圖表 -->
           <div class="level-pipeline-box">
-            <div class="box-sub-title"><span>📊 職級分佈 (L3 - L8)</span><span>總計: ${finalHc} 人</span></div>
+            <div class="box-sub-title"><span>${lblLevels}</span><span>Total: ${finalHc}</span></div>
             <div class="level-tags">
               <span class="level-tag">L3: <b>${d.levels.L3}</b></span>
               <span class="level-tag">L4: <b>${d.levels.L4}</b></span>
@@ -323,7 +381,7 @@ function renderDashboard() {
               <span class="level-tag">L7(M3): <b>${d.levels.L7}</b></span>
               <span class="level-tag">L8(M4): <b>${d.levels.L8}</b></span>
             </div>
-            <div class="box-sub-title" style="margin-top:8px;"><span>🔎 招募 Pipeline</span><span>(HR ➔ Offer)</span></div>
+            <div class="box-sub-title" style="margin-top:8px;"><span>${lblPipe}</span><span>(HR ➔ Offer)</span></div>
             <div class="pipeline-bar-row">
               <div class="lbl">HR Screen</div>
               <div class="pipeline-track"><div class="pipeline-fill" style="width: ${Math.round(d.pipeline.hr/maxPipe*100)}%;"></div></div>
@@ -347,13 +405,13 @@ function renderDashboard() {
           </div>
 
           <div class="talent-review-box">
-            <div class="tr-title"><span>👥 人才盤點 (9-Box)</span><span>團隊總計 ${finalHc} 人</span></div>
+            <div class="tr-title"><span>${lblReview}</span><span>Total ${finalHc} HC</span></div>
             <div style="color:var(--text-secondary);">⭐ Star (Box 1): <b>${d.star}</b> | 🚀 High Pot: <b>${d.highPot}</b> | ⚠️ PIP Pool: <b style="color:var(--critical);">${d.pip}</b></div>
           </div>
 
-          <div class="card-desc"><b>核心動態：</b>${d.desc}</div>
+          <div class="card-desc"><b>Context: </b>${formatText(d.desc)}</div>
         </div>
-        <div class="card-footer">${d.goal}</div>
+        <div class="card-footer">${formatText(d.goal)}</div>
       </div>
     `;
   }).join('');

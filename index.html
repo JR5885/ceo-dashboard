@@ -7,15 +7,17 @@
 <style>
   :root{
     color-scheme: light dark;
-    --page-plane: #090d16; --text-primary: #ffffff; --text-secondary: #94a3b8;
-    --text-muted: #64748b; --gridline: #1e293b; --border: rgba(255,255,255,0.08);
-    --warning: #fbbf24; --critical: #e66767; --card-bg: #0f172a;
+    --surface-1: #fcfcfb; --page-plane: #090d16; --text-primary: #ffffff; --text-secondary: #94a3b8;
+    --text-muted: #64748b; --gridline: #1e293b; --baseline: #334155; --border: rgba(255,255,255,0.08);
+    --series-1: #38bdf8; --series-3: #34d399; --series-6: #10b981; --good: #10b981;
+    --warning: #fbbf24; --serious: #f97316; --critical: #e66767; --card-bg: #0f172a;
     --cyan: #06b6d4; --purple: #a855f7; --green: #34d399;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{background:var(--page-plane); color:var(--text-primary); font-family: system-ui,-apple-system,"Segoe UI",sans-serif; font-size:13.5px; line-height:1.5; padding:16px 24px 80px;}
   .wrap{max-width:1440px; margin:0 auto;}
 
+  /* 全站密碼保護遮罩 */
   #site_lock_overlay {
     position: fixed; inset: 0; background: var(--page-plane); z-index: 99999;
     display: flex; align-items: center; justify-content: center; padding: 20px;
@@ -37,26 +39,38 @@
   }
   .site-lock-error { color: var(--critical); font-size: 12px; margin-top: 12px; }
 
-  header.top{margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:16px;}
-  header.top h1{font-size:24px; font-weight:800; letter-spacing:-0.02em;}
+  header.top{margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:16px;}
+  header.top h1{font-size:22px; font-weight:800; letter-spacing:-0.02em;}
 
-  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 28px; }
+  .section-title {
+    font-size: 16px; font-weight: 700; color: var(--cyan); margin: 24px 0 16px;
+    display: flex; align-items: center; gap: 8px; border-left: 4px solid var(--cyan); padding-left: 10px;
+  }
+
+  /* 靜態卡片網格佈局 */
+  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
   .metric-card {
     background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
     position: relative; box-shadow: 0 4px 16px rgba(0,0,0,0.3); border-left: 4px solid var(--cyan);
+    display: flex; flex-direction: column; justify-content: space-between;
   }
-  .metric-card.hc { border-left-color: var(--cyan); }
-  .metric-card.budget { border-left-color: var(--green); }
-  .metric-card.density { border-left-color: var(--purple); }
-  .metric-card.okr { border-left-color: var(--warning); }
-  .metric-card.hiring { border-left-color: var(--series-1, #38bdf8); }
-  .metric-card.risk { border-left-color: var(--critical); }
+  .metric-card.eng { border-left-color: #38bdf8; }
+  .metric-card.prod { border-left-color: #a855f7; }
+  .metric-card.ops { border-left-color: #34d399; }
+  .metric-card.bd { border-left-color: #fbbf24; }
+  .metric-card.legal { border-left-color: #ec4899; }
+  .metric-card.fin_hr { border-left-color: #06b6d4; }
 
   .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .card-title { font-size: 14.5px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: .03em; }
-  .card-icon { font-size: 18px; }
-  .card-value { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .card-title { font-size: 15px; font-weight: 700; color: #fff; }
+  .card-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--text-secondary); }
+  
+  .metric-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; background: #070b14; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); }
+  .stat-item .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+  .stat-item .val { font-size: 15px; font-weight: 700; color: #fff; margin-top: 2px; }
+
   .card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+  .card-footer { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 11.5px; color: var(--cyan); font-weight: 600; }
 
   @media (max-width: 1080px) {
     .cards-grid { grid-template-columns: 1fr; }
@@ -65,11 +79,12 @@
 </head>
 <body>
 
+<!-- 全站密碼保護遮罩 -->
 <div id="site_lock_overlay">
   <div class="site-lock-box">
     <h2>🔒 Executive Dashboard 存取驗證</h2>
-    <p>請輸入全站存取密碼以檢視六大職能部門動態看板（預設密碼：5678）</p>
-    <input type="password" id="site_pwd_input" placeholder="請輸入密碼..." onkeydown="if(event.key==='Enter') verifySitePassword()">
+    <p>此 Executive Team Dashboard 包含機密資料，請輸入全站存取密碼以繼續。</p>
+    <input type="password" id="site_pwd_input" placeholder="請輸入密碼 (預設: 5678)..." onkeydown="if(event.key==='Enter') verifySitePassword()">
     <button onclick="verifySitePassword()">進入系統</button>
     <div id="site_lock_error" class="site-lock-error"></div>
   </div>
@@ -78,69 +93,119 @@
 <div class="wrap">
   <header class="top">
     <div>
-      <h1>Executive Team Dashboard — 六大職能部門動態總覽</h1>
+      <h1>Executive Team Dashboard — 六大職能部門高階動態總覽</h1>
     </div>
   </header>
 
+  <div class="section-title">🏢 全公司六大核心職能部門動態摘要 (CEO Executive Overview)</div>
+
   <div class="cards-grid">
-    <!-- 1. Headcount Card -->
-    <div class="metric-card hc">
-      <div class="card-header">
-        <div class="card-title">👥 組織編制與總人數</div>
-        <div class="card-icon">📊</div>
+    <!-- 1. 研發工程 (Engineering) -->
+    <div class="metric-card eng">
+      <div>
+        <div class="card-header">
+          <div class="card-title">研發工程 (Engineering)</div>
+          <div class="card-badge">T2 Benchmark</div>
+        </div>
+        <div class="metric-stats">
+          <div class="stat-item"><div class="lbl">現有編制</div><div class="val" style="color:#38bdf8;">15 人</div></div>
+          <div class="stat-item"><div class="lbl">年度薪酬預算</div><div class="val" style="color:#34d399;">$1,552,500</div></div>
+        </div>
+        <div class="card-desc">
+          <b>核心動態：</b>主導全球核心清算架構高併發重構，擴編 3 名 Staff/Senior 級別支援 24/7 SRE 自動化自愈體系與 SOC2 審計。
+        </div>
       </div>
-      <div class="card-value" style="color:var(--cyan);">15 人</div>
-      <div class="card-desc">涵蓋研發、產品、營運、商務、法務與財務跨國據點編制，確保各職能配置與業務吞吐量匹配。</div>
+      <div class="card-footer">🎯 重點目標：99.99% 高可用性與延遲降低 40%</div>
     </div>
 
-    <!-- 2. Budget & Payroll Card -->
-    <div class="metric-card budget">
-      <div class="card-header">
-        <div class="card-title">💰 薪酬預算與跑道</div>
-        <div class="card-icon">💵</div>
+    <!-- 2. 產品管理 (Product) -->
+    <div class="metric-card prod">
+      <div>
+        <div class="card-header">
+          <div class="card-title">產品管理 (Product Management)</div>
+          <div class="card-badge">T1-T2 Mix</div>
+        </div>
+        <div class="metric-stats">
+          <div class="stat-item"><div class="lbl">現有編制</div><div class="val" style="color:#a855f7;">8 人</div></div>
+          <div class="stat-item"><div class="lbl">年度薪酬預算</div><div class="val" style="color:#34d399;">$980,000</div></div>
+        </div>
+        <div class="card-desc">
+          <b>核心動態：</b>推進跨國本地化產品體驗與多幣種資金池路由協議設計，強化用戶旅程轉化率與產品矩陣 ROI。
+        </div>
       </div>
-      <div class="card-value" style="color:var(--green);">$1,552,500 <span style="font-size:12px; font-weight:normal;">USD/yr</span></div>
-      <div class="card-desc">依據 T2 全球基準與地區係數（含約 12% 法定成本準備金）精算，維持健全的資本跑道 (Runway)[cite: 1]。</div>
+      <div class="card-footer">🎯 重點目標：全球支付與交易生態系閉環</div>
     </div>
 
-    <!-- 3. Talent Density Card -->
-    <div class="metric-card density">
-      <div class="card-header">
-        <div class="card-title">🏗️ 職級結構與人才密度</div>
-        <div class="card-icon">🏛️</div>
+    <!-- 3. 營運管理 (Operations) -->
+    <div class="metric-card ops">
+      <div>
+        <div class="card-header">
+          <div class="card-title">營運管理 (Operations)</div>
+          <div class="card-badge">Global Ops</div>
+        </div>
+        <div class="metric-stats">
+          <div class="stat-item"><div class="lbl">現有編制</div><div class="val" style="color:#34d399;">12 人</div></div>
+          <div class="stat-item"><div class="lbl">年度薪酬預算</div><div class="val" style="color:#34d399;">$1,120,000</div></div>
+        </div>
+        <div class="card-desc">
+          <b>核心動態：</b>落實跨國清算自動化降本，優化單位營運成本（Unit Cost）與 24/7 通道異常極速應變機制。
+        </div>
       </div>
-      <div class="card-value" style="color:var(--purple);">金字塔結構</div>
-      <div class="card-desc">符合 40% 骨幹 (L4) + 25% 初階 (L3) + 25% 資深 (L5) + 10% 領導層之健康分佈[cite: 1]。</div>
+      <div class="card-footer">🎯 重點目標：營運自動化覆蓋率達 85%</div>
     </div>
 
-    <!-- 4. Strategic OKRs Card -->
-    <div class="metric-card okr">
-      <div class="card-header">
-        <div class="card-title">🎯 戰略 OKR 執行對齊</div>
-        <div class="card-icon">🚀</div>
+    <!-- 4. 商務與銷售 (BD & Sales) -->
+    <div class="metric-card bd">
+      <div>
+        <div class="card-header">
+          <div class="card-title">商務與銷售 (BD & Sales)</div>
+          <div class="card-badge">Growth Driver</div>
+        </div>
+        <div class="metric-stats">
+          <div class="stat-item"><div class="lbl">現有編制</div><div class="val" style="color:#fbbf24;">10 人</div></div>
+          <div class="stat-item"><div class="lbl">年度薪酬預算</div><div class="val" style="color:#34d399;">$1,350,000</div></div>
+        </div>
+        <div class="card-desc">
+          <b>核心動態：</b>聚焦大區 Top 機構客戶攻堅與戰略大單成交，優化獲客成本（CAC）並擴展全球商業版圖。
+        </div>
       </div>
-      <div class="card-value" style="color:var(--warning);">高度對齊</div>
-      <div class="card-desc">各部門日常交付與關鍵指標（KRs）緊密扣合公司總部（O0）全球化佈局與吞吐量翻倍藍圖[cite: 1]。</div>
+      <div class="card-footer">🎯 重點目標：大中華與亞太區營收 Quota 達成</div>
     </div>
 
-    <!-- 5. Hiring & Expansion Card -->
-    <div class="metric-card hiring">
-      <div class="card-header">
-        <div class="card-title">📈 招募漏斗與擴編成本</div>
-        <div class="card-icon">📈</div>
+    <!-- 5. 法務與合規 (Legal & Compliance) -->
+    <div class="metric-card legal">
+      <div>
+        <div class="card-header">
+          <div class="card-title">法務與合規 (Legal & Compliance)</div>
+          <div class="card-badge">Risk Defense</div>
+        </div>
+        <div class="metric-stats">
+          <div class="stat-item"><div class="lbl">現有編制</div><div class="val" style="color:#ec4899;">6 人</div></div>
+          <div class="stat-item"><div class="lbl">年度薪酬預算</div><div class="val" style="color:#34d399;">$890,000</div></div>
+        </div>
+        <div class="card-desc">
+          <b>核心動態：</b>對接多國牌照申請與 AML 監管審計，強化跨國子公司合規架構與涉訴防禦最高防線。
+        </div>
       </div>
-      <div class="card-value" style="color:#38bdf8;">+$414,500 <span style="font-size:12px;">(+27.1%)</span></div>
-      <div class="card-desc">追蹤新招募崗位漏斗轉換率（從 HR Screen 到 Offer），預算擴編帶動總編制成長 20.0%[cite: 1]。</div>
+      <div class="card-footer">🎯 重點目標：零重大監管罰單與牌照全覆蓋</div>
     </div>
 
-    <!-- 6. Talent Review & Risk Card -->
-    <div class="metric-card risk">
-      <div class="card-header">
-        <div class="card-title">⚠️ 人才九宮格與合規風險</div>
-        <div class="card-icon">🛡️</div>
+    <!-- 6. 財務與人資 (Finance & HR) -->
+    <div class="metric-card fin_hr">
+      <div>
+        <div class="card-header">
+          <div class="card-title">財務與人資 (Finance & HR)</div>
+          <div class="card-badge">Governance</div>
+        </div>
+        <div class="metric-stats">
+          <div class="stat-item"><div class="lbl">現有編制</div><div class="val" style="color:#06b6d4;">8 人</div></div>
+          <div class="stat-item"><div class="lbl">年度薪酬預算</div><div class="val" style="color:#34d399;">$950,000</div></div>
+        </div>
+        <div class="card-desc">
+          <b>核心動態：</b>確保四大會計師事務所無保留意見審查，推動 L3-L8 雙軌職涯階梯落地與跨國人效優化。
+        </div>
       </div>
-      <div class="card-value" style="color:var(--critical);">風險控管中</div>
-      <div class="card-desc">精準鎖定 Box 1 優先晉升池與 Box 9/6 高風險輔導名單，嚴格遵循多國勞動法規最後手段性原則。</div>
+      <div class="card-footer">🎯 重點目標：月結週期壓縮至 T+2 與海外資本佈局</div>
     </div>
   </div>
 </div>
@@ -156,7 +221,7 @@ function verifySitePassword() {
     document.getElementById('site_lock_overlay').style.display = 'none';
     sessionStorage.setItem('site_unlocked', 'true');
   } else {
-    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入！";
+    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入（預設: 5678）！";
   }
 }
 

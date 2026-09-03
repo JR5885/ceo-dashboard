@@ -118,158 +118,26 @@
   <div class="company-summary-bar">
     <div class="summary-box">
       <div class="lbl">公司總編制 (現有 / 含新招)</div>
-      <div class="val">59 / 68 人</div>
+      <div class="val" id="sum_hc">0 / 0 人</div>
     </div>
     <div class="summary-box" style="border-top-color: var(--green);">
       <div class="lbl">現有年度總薪酬預算</div>
-      <div class="val" style="color:var(--green);">$6,892,500</div>
+      <div class="val" id="sum_budget" style="color:var(--green);">$0</div>
     </div>
     <div class="summary-box" style="border-top-color: var(--warning);">
       <div class="lbl">招募擴編預算影響</div>
-      <div class="val" style="color:var(--warning);">+$1,095,000 (+15.9%)</div>
+      <div class="val" id="sum_hire_cost" style="color:var(--warning);">+$0</div>
     </div>
     <div class="summary-box" style="border-top-color: var(--critical);">
       <div class="lbl">人才風險池 (Box 9/6 PIP)</div>
-      <div class="val" style="color:var(--critical);">7 人</div>
+      <div class="val" id="sum_pip" style="color:var(--critical);">0 人</div>
     </div>
   </div>
 
   <div class="section-title">🏢 六大核心職能部門即時動態與人才盤點摘要</div>
 
   <!-- 六大部門動態卡片網格 -->
-  <div class="cards-grid">
-    <!-- 1. 研發工程 -->
-    <div class="metric-card eng">
-      <div>
-        <div class="card-header">
-          <div class="card-title">研發工程 (Engineering)</div>
-          <div class="card-badge">T2 Benchmark</div>
-        </div>
-        <div class="metric-stats">
-          <div class="stat-item"><div class="lbl">現有 / 新招編制</div><div class="val" style="color:var(--cyan);">15 人 <span style="color:var(--green); font-size:11px;">(+3)</span></div></div>
-          <div class="stat-item"><div class="lbl">擴編後總人數</div><div class="val" style="color:#fff;">18 人</div></div>
-          <div class="stat-item"><div class="lbl">現有年度預算</div><div class="val" style="color:var(--text-secondary);">$1,552,500</div></div>
-          <div class="stat-item"><div class="lbl">擴編後總預算</div><div class="val" style="color:var(--green);">$1,780,500</div></div>
-        </div>
-        <div class="talent-review-box">
-          <div class="tr-title"><span>👥 人才盤點 (9-Box)</span><span>總計 18 人</span></div>
-          <div style="color:var(--text-secondary);">⭐ Star (Box 1): <b>3 人</b> | 🚀 High Pot: <b>4 人</b> | ⚠️ PIP Pool: <b style="color:var(--critical);">2 人</b></div>
-        </div>
-        <div class="card-desc"><b>核心動態：</b>主導全球核心清算架構高併發重構，擴編 3 名 Staff/Senior 級別支援 24/7 SRE 自動化自愈體系與 SOC2 審計。</div>
-      </div>
-      <div class="card-footer">🎯 戰略目標：99.99% 高可用性與延遲降低 40%</div>
-    </div>
-
-    <!-- 2. 產品管理 -->
-    <div class="metric-card prod">
-      <div>
-        <div class="card-header">
-          <div class="card-title">產品管理 (Product Management)</div>
-          <div class="card-badge">T1-T2 Mix</div>
-        </div>
-        <div class="metric-stats">
-          <div class="stat-item"><div class="lbl">現有 / 新招編制</div><div class="val" style="color:var(--cyan);">8 人 <span style="color:var(--green); font-size:11px;">(+1)</span></div></div>
-          <div class="stat-item"><div class="lbl">擴編後總人數</div><div class="val" style="color:#fff;">9 人</div></div>
-          <div class="stat-item"><div class="lbl">現有年度預算</div><div class="val" style="color:var(--text-secondary);">$980,000</div></div>
-          <div class="stat-item"><div class="lbl">擴編後總預算</div><div class="val" style="color:var(--green);">$1,120,000</div></div>
-        </div>
-        <div class="talent-review-box">
-          <div class="tr-title"><span>👥 人才盤點 (9-Box)</span><span>總計 9 人</span></div>
-          <div style="color:var(--text-secondary);">⭐ Star (Box 1): <b>2 人</b> | 🚀 High Pot: <b>3 人</b> | ⚠️ PIP Pool: <b style="color:var(--critical);">1 人</b></div>
-        </div>
-        <div class="card-desc"><b>核心動態：</b>推進跨國本地化產品體驗與多幣種資金池路由協議設計，強化用戶旅程轉化率與產品矩陣 ROI。</div>
-      </div>
-      <div class="card-footer">🎯 戰略目標：全球支付與交易生態系閉環</div>
-    </div>
-
-    <!-- 3. 營運管理 -->
-    <div class="metric-card ops">
-      <div>
-        <div class="card-header">
-          <div class="card-title">營運管理 (Operations)</div>
-          <div class="card-badge">Global Ops</div>
-        </div>
-        <div class="metric-stats">
-          <div class="stat-item"><div class="lbl">現有 / 新招編制</div><div class="val" style="color:var(--cyan);">12 人 <span style="color:var(--green); font-size:11px;">(+2)</span></div></div>
-          <div class="stat-item"><div class="lbl">擴編後總人數</div><div class="val" style="color:#fff;">14 人</div></div>
-          <div class="stat-item"><div class="lbl">現有年度預算</div><div class="val" style="color:var(--text-secondary);">$1,120,000</div></div>
-          <div class="stat-item"><div class="lbl">擴編後總預算</div><div class="val" style="color:var(--green);">$1,285,000</div></div>
-        </div>
-        <div class="talent-review-box">
-          <div class="tr-title"><span>👥 人才盤點 (9-Box)</span><span>總計 14 人</span></div>
-          <div style="color:var(--text-secondary);">⭐ Star (Box 1): <b>2 人</b> | 🚀 High Pot: <b>4 人</b> | ⚠️ PIP Pool: <b style="color:var(--critical);">1 人</b></div>
-        </div>
-        <div class="card-desc"><b>核心動態：</b>落實跨國清算自動化降本，優化單位營運成本（Unit Cost）與 24/7 通道異常極速應變機制。</div>
-      </div>
-      <div class="card-footer">🎯 戰略目標：營運自動化覆蓋率達 85%</div>
-    </div>
-
-    <!-- 4. 商務與銷售 -->
-    <div class="metric-card bd">
-      <div>
-        <div class="card-header">
-          <div class="card-title">商務與銷售 (BD & Sales)</div>
-          <div class="card-badge">Growth Driver</div>
-        </div>
-        <div class="metric-stats">
-          <div class="stat-item"><div class="lbl">現有 / 新招編制</div><div class="val" style="color:var(--cyan);">10 人 <span style="color:var(--green); font-size:11px;">(+2)</span></div></div>
-          <div class="stat-item"><div class="lbl">擴編後總人數</div><div class="val" style="color:#fff;">12 人</div></div>
-          <div class="stat-item"><div class="lbl">現有年度預算</div><div class="val" style="color:var(--text-secondary);">$1,350,000</div></div>
-          <div class="stat-item"><div class="lbl">擴編後總預算</div><div class="val" style="color:var(--green);">$1,560,000</div></div>
-        </div>
-        <div class="talent-review-box">
-          <div class="tr-title"><span>👥 人才盤點 (9-Box)</span><span>總計 12 人</span></div>
-          <div style="color:var(--text-secondary);">⭐ Star (Box 1): <b>3 人</b> | 🚀 High Pot: <b>3 人</b> | ⚠️ PIP Pool: <b style="color:var(--critical);">2 人</b></div>
-        </div>
-        <div class="card-desc"><b>核心動態：</b>聚焦大區 Top 機構客戶攻堅與戰略大單成交，優化獲客成本（CAC）並擴展全球商業版圖。</div>
-      </div>
-      <div class="card-footer">🎯 戰略目標：大中華與亞太區營收 Quota 達成</div>
-    </div>
-
-    <!-- 5. 法務與合規 -->
-    <div class="metric-card legal">
-      <div>
-        <div class="card-header">
-          <div class="card-title">法務與合規 (Legal & Compliance)</div>
-          <div class="card-badge">Risk Defense</div>
-        </div>
-        <div class="metric-stats">
-          <div class="stat-item"><div class="lbl">現有 / 新招編制</div><div class="val" style="color:var(--cyan);">6 人 <span style="color:var(--green); font-size:11px;">(+1)</span></div></div>
-          <div class="stat-item"><div class="lbl">擴編後總人數</div><div class="val" style="color:#fff;">7 人</div></div>
-          <div class="stat-item"><div class="lbl">現有年度預算</div><div class="val" style="color:var(--text-secondary);">$890,000</div></div>
-          <div class="stat-item"><div class="lbl">擴編後總預算</div><div class="val" style="color:var(--green);">$1,040,000</div></div>
-        </div>
-        <div class="talent-review-box">
-          <div class="tr-title"><span>👥 人才盤點 (9-Box)</span><span>總計 7 人</span></div>
-          <div style="color:var(--text-secondary);">⭐ Star (Box 1): <b>1 人</b> | 🚀 High Pot: <b>2 人</b> | ⚠️ PIP Pool: <b style="color:var(--critical);">0 人</b></div>
-        </div>
-        <div class="card-desc"><b>核心動態：</b>對接多國牌照申請與 AML 監管審計，強化跨國子公司合規架構與涉訴防禦最高防線。</div>
-      </div>
-      <div class="card-footer">🎯 戰略目標：零重大監管罰單與牌照全覆蓋</div>
-    </div>
-
-    <!-- 6. 財務與人資 -->
-    <div class="metric-card fin_hr">
-      <div>
-        <div class="card-header">
-          <div class="card-title">財務與人資 (Finance & HR)</div>
-          <div class="card-badge">Governance</div>
-        </div>
-        <div class="metric-stats">
-          <div class="stat-item"><div class="lbl">現有 / 新招編制</div><div class="val" style="color:var(--cyan);">8 人 <span style="color:var(--green); font-size:11px;">(+1)</span></div></div>
-          <div class="stat-item"><div class="lbl">擴編後總人數</div><div class="val" style="color:#fff;">9 人</div></div>
-          <div class="stat-item"><div class="lbl">現有年度預算</div><div class="val" style="color:var(--text-secondary);">$950,000</div></div>
-          <div class="stat-item"><div class="lbl">擴編後總預算</div><div class="val" style="color:var(--green);">$1,060,000</div></div>
-        </div>
-        <div class="talent-review-box">
-          <div class="tr-title"><span>👥 人才盤點 (9-Box)</span><span>總計 9 人</span></div>
-          <div style="color:var(--text-secondary);">⭐ Star (Box 1): <b>2 人</b> | 🚀 High Pot: <b>3 人</b> | ⚠️ PIP Pool: <b style="color:var(--critical);">1 人</b></div>
-        </div>
-        <div class="card-desc"><b>核心動態：</b>確保四大會計師事務所無保留意見審查，推動 L3-L8 雙軌職涯階梯落地與跨國人效優化。</div>
-      </div>
-      <div class="card-footer">🎯 戰略目標：月結週期壓縮至 T+2 與海外資本佈局</div>
-    </div>
-  </div>
+  <div class="cards-grid" id="departmentsGrid"></div>
 </div>
 
 <script>
@@ -282,6 +150,7 @@ function verifySitePassword() {
   if (inputVal === SITE_PASSWORD) {
     document.getElementById('site_lock_overlay').style.display = 'none';
     sessionStorage.setItem('site_unlocked', 'true');
+    renderDashboard();
   } else {
     errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入（預設: 5678）！";
   }
@@ -290,8 +159,148 @@ function verifySitePassword() {
 window.addEventListener('DOMContentLoaded', () => {
   if (sessionStorage.getItem('site_unlocked') === 'true') {
     document.getElementById('site_lock_overlay').style.display = 'none';
+    renderDashboard();
   }
 });
+
+// 六大職能部門動態資料來源
+const departmentsData = [
+  {
+    id: 'eng',
+    name: '研發工程 (Engineering)',
+    badge: 'T2 Benchmark',
+    baseHc: 15,
+    newHires: 3,
+    baseBudget: 1552500,
+    hireCost: 228000,
+    star: 3,
+    highPot: 4,
+    pip: 2,
+    desc: '主導全球核心清算架構高併發重構，擴編 3 名 Staff/Senior 級別支援 24/7 SRE 自動化自愈體系與 SOC2 審計。',
+    goal: '🎯 戰略目標：99.99% 高可用性與延遲降低 40%'
+  },
+  {
+    id: 'prod',
+    name: '產品管理 (Product Management)',
+    badge: 'T1-T2 Mix',
+    baseHc: 8,
+    newHires: 1,
+    baseBudget: 980000,
+    hireCost: 140000,
+    star: 2,
+    highPot: 3,
+    pip: 1,
+    desc: '推進跨國本地化產品體驗與多幣種資金池路由協議設計，強化用戶旅程轉化率與產品矩陣 ROI。',
+    goal: '🎯 戰略目標：全球支付與交易生態系閉環'
+  },
+  {
+    id: 'ops',
+    name: '營運管理 (Operations)',
+    badge: 'Global Ops',
+    baseHc: 12,
+    newHires: 2,
+    baseBudget: 1120000,
+    hireCost: 165000,
+    star: 2,
+    highPot: 4,
+    pip: 1,
+    desc: '落實跨國清算自動化降本，優化單位營運成本（Unit Cost）與 24/7 通道異常極速應變機制。',
+    goal: '🎯 戰略目標：營運自動化覆蓋率達 85%'
+  },
+  {
+    id: 'bd',
+    name: '商務與銷售 (BD & Sales)',
+    badge: 'Growth Driver',
+    baseHc: 10,
+    newHires: 2,
+    baseBudget: 1350000,
+    hireCost: 210000,
+    star: 3,
+    highPot: 3,
+    pip: 2,
+    desc: '聚焦大區 Top 機構客戶攻堅與戰略大單成交，優化獲客成本（CAC）並擴展全球商業版圖。',
+    goal: '🎯 戰略目標：大中華與亞太區營收 Quota 達成'
+  },
+  {
+    id: 'legal',
+    name: '法務與合規 (Legal & Compliance)',
+    badge: 'Risk Defense',
+    baseHc: 6,
+    newHires: 1,
+    baseBudget: 890000,
+    hireCost: 150000,
+    star: 1,
+    highPot: 2,
+    pip: 0,
+    desc: '對接多國牌照申請與 AML 監管審計，強化跨國子公司合規架構與涉訴防禦最高防線。',
+    goal: '🎯 戰略目標：零重大監管罰單與牌照全覆蓋'
+  },
+  {
+    id: 'fin_hr',
+    name: '財務與人資 (Finance & HR)',
+    badge: 'Governance',
+    baseHc: 8,
+    newHires: 1,
+    baseBudget: 950000,
+    hireCost: 110000,
+    star: 2,
+    highPot: 3,
+    pip: 1,
+    desc: '確保四大會計師事務所無保留意見審查，推動 L3-L8 雙軌職涯階梯落地與跨國人效優化。',
+    goal: '🎯 戰略目標：月結週期壓縮至 T+2 與海外資本佈局'
+  }
+];
+
+function renderDashboard() {
+  const gridEl = document.getElementById('departmentsGrid');
+  if (!gridEl) return;
+
+  let totalBaseHc = 0;
+  let totalNewHc = 0;
+  let totalBaseBudget = 0;
+  let totalHireCost = 0;
+  let totalPip = 0;
+
+  gridEl.innerHTML = departmentsData.map(d => {
+    totalBaseHc += d.baseHc;
+    totalNewHc += d.newHires;
+    totalBaseBudget += d.baseBudget;
+    totalHireCost += d.hireCost;
+    totalPip += d.pip;
+
+    const finalHc = d.baseHc + d.newHires;
+    const finalBudget = d.baseBudget + d.hireCost;
+
+    return `
+      <div class="metric-card ${d.id}">
+        <div>
+          <div class="card-header">
+            <div class="card-title">${d.name}</div>
+            <div class="card-badge">${d.badge}</div>
+          </div>
+          <div class="metric-stats">
+            <div class="stat-item"><div class="lbl">現有 / 新招編制</div><div class="val" style="color:var(--cyan);">${d.baseHc} 人 <span style="color:var(--green); font-size:11px;">(+${d.newHires})</span></div></div>
+            <div class="stat-item"><div class="lbl">擴編後總人數</div><div class="val" style="color:#fff;">${finalHc} 人</div></div>
+            <div class="stat-item"><div class="lbl">現有年度預算</div><div class="val" style="color:var(--text-secondary);">$${d.baseBudget.toLocaleString()}</div></div>
+            <div class="stat-item"><div class="lbl">擴編後總預算</div><div class="val" style="color:var(--green);">$${finalBudget.toLocaleString()}</div></div>
+          </div>
+          <div class="talent-review-box">
+            <div class="tr-title"><span>👥 人才盤點 (9-Box)</span><span>總計 ${finalHc} 人</span></div>
+            <div style="color:var(--text-secondary);">⭐ Star (Box 1): <b>${d.star} 人</b> | 🚀 High Pot: <b>${d.highPot} 人</b> | ⚠️ PIP Pool: <b style="color:var(--critical);">${d.pip} 人</b></div>
+          </div>
+          <div class="card-desc"><b>核心動態：</b>${d.desc}</div>
+        </div>
+        <div class="card-footer">${d.goal}</div>
+      </div>
+    `;
+  }).join('');
+
+  // 渲染頂部公司級總計數據
+  document.getElementById('sum_hc').innerText = `${totalBaseHc} / ${totalBaseHc + totalNewHc} 人`;
+  document.getElementById('sum_budget').innerText = `$${totalBaseBudget.toLocaleString()}`;
+  document.getElementById('sum_hire_cost').innerText = `+$${totalHireCost.toLocaleString()} (+${((totalHireCost/totalBaseBudget)*100).toFixed(1)}%)`;
+  document.getElementById('sum_pip').innerText = `${totalPip} 人`;
+}
 </script>
 </body>
 </html>

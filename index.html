@@ -176,7 +176,7 @@
 </div>
 
 <script>
-const SITE_PASSWORD = "5678";
+const SITE_PASSWORD = "5885";
 
 function verifySitePassword() {
   const inputVal = document.getElementById('site_pwd_input').value.trim();
@@ -187,7 +187,7 @@ function verifySitePassword() {
     sessionStorage.setItem('site_unlocked', 'true');
     renderDashboard();
   } else {
-    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入（預設: 5678）！";
+    errorEl.innerText = "⚠️ 密碼錯誤，請重新輸入（四位數）！";
   }
 }
 
